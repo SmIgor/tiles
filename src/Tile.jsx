@@ -7,6 +7,7 @@ const Tile = ({
   borders,
   selectedTiles,
   setSelectedTiles,
+  updateCount,
 }) => {
   const style = useMemo(
     () => ({
@@ -29,6 +30,7 @@ const Tile = ({
     const newSelectedTiles = [...selectedTiles];
     newSelectedTiles[y][x] = !newSelectedTiles[y][x];
     setSelectedTiles(newSelectedTiles);
+    updateCount(newSelectedTiles[y][x]);
   };
 
   return (
