@@ -1,16 +1,24 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Tile from './Tile';
 
 const App = ({ rows, columns }) => {
-  const board = Array(rows)
-    .fill(false)
-    .map(() => Array(columns).fill(false));
+  const board = useMemo(
+    () =>
+      Array(rows)
+        .fill(false)
+        .map(() => Array(columns).fill(false)),
+    [rows, columns]
+  );
 
   const [selectedTiles, setSelectedTiles] = useState(board);
+  const [selectedTilesCount, setSelectedTilesCount] = useState(0);
 
-  const gridColumnsStyle = {
-    gridTemplateColumns: Array(columns).fill('1fr').join(' '),
-  };
+  const gridColumnsStyle = useMemo(
+    () => ({
+      gridTemplateColumns: Array(columns).fill('1fr').join(' '),
+    }),
+    [columns]
+  );
 
   const getBordersArray = (indexR, indexC) => {
     const borders = [];
@@ -51,16 +59,12 @@ const App = ({ rows, columns }) => {
       <div className="board" style={gridColumnsStyle}>
         {board.map((row, indexR) =>
           row.map((_, indexC) => {
-            let color = '';
             let newIndex = indexC;
-            if (indexR % 2 === 1) {
-              newIndex += 1;
-            }
-            if (newIndex % 2 === 0) {
-              color = '#000000';
-            } else {
-              color = '#14213d';
-            }
+            if (indexR % 2 === 1) newIndex += 1;
+
+            let color = '';
+            newIndex % 2 === 0 ? (color = '#000000') : (color = '#14213d');
+
             return (
               <Tile
                 key={`${indexR}${indexC}`}
@@ -74,23 +78,14 @@ const App = ({ rows, columns }) => {
                 }
                 selectedTiles={selectedTiles}
                 setSelectedTiles={setSelectedTiles}
+                selectedTilesCount={selectedTilesCount}
+                setSelectedTilesCount={setSelectedTilesCount}
               />
             );
           })
         )}
       </div>
-      <div className="count">
-        You selected{' '}
-        {selectedTiles.reduce((acc, value) => {
-          return value.reduce((acc, value) => {
-            if (value) {
-              return ++acc;
-            }
-            return acc;
-          }, acc);
-        }, 0)}{' '}
-        tiles
-      </div>
+      <div className="count">You selected {selectedTilesCount} tiles</div>
     </div>
   );
 };
