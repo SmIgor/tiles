@@ -21,7 +21,7 @@ const App = ({ rows, columns }) => {
 
   const gridColumnsStyle = useMemo(
     () => ({
-      gridTemplateColumns: Array(columns).fill('1fr').join(' '),
+      gridTemplateColumns: '1fr '.repeat(columns),
     }),
     [columns]
   );
