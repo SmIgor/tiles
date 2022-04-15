@@ -11,7 +11,6 @@ const App = ({ rows, columns }) => {
   );
 
   const [selectedTiles, setSelectedTiles] = useState(board);
-  const [selectedTilesCount, setSelectedTilesCount] = useState(0);
 
   const gridColumnsStyle = useMemo(
     () => ({
@@ -78,14 +77,23 @@ const App = ({ rows, columns }) => {
                 }
                 selectedTiles={selectedTiles}
                 setSelectedTiles={setSelectedTiles}
-                selectedTilesCount={selectedTilesCount}
-                setSelectedTilesCount={setSelectedTilesCount}
               />
             );
           })
         )}
       </div>
-      <div className="count">You selected {selectedTilesCount} tiles</div>
+      <div className="count">
+        You selected{' '}
+        {selectedTiles.reduce((acc, value) => {
+          return value.reduce((acc, value) => {
+            if (value) {
+              return ++acc;
+            }
+            return acc;
+          }, acc);
+        }, 0)}{' '}
+        tiles
+      </div>
     </div>
   );
 };

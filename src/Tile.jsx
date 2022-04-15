@@ -7,8 +7,6 @@ const Tile = ({
   borders,
   selectedTiles,
   setSelectedTiles,
-  selectedTilesCount,
-  setSelectedTilesCount,
 }) => {
   const style = useMemo(
     () => ({
@@ -31,10 +29,6 @@ const Tile = ({
     const newSelectedTiles = [...selectedTiles];
     newSelectedTiles[y][x] = !newSelectedTiles[y][x];
     setSelectedTiles(newSelectedTiles);
-
-    let newCount = selectedTilesCount;
-    newSelectedTiles[y][x] ? newCount++ : newCount--;
-    setSelectedTilesCount(newCount);
   };
 
   return (
