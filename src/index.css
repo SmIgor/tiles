@@ -16,17 +16,18 @@
 .board {
   display: grid;
   background-color: #444;
+  margin: 1px;
 }
 
 .tile {
   height: 50px;
   width: 50px;
-  border: 2px solid transparent;
-  margin: 5px;
+  margin: 1px;
+  user-select: none;
 }
 
 .tile:hover {
-  border-color: #eee;
+  border: 2px solid #eee;
 }
 
 .border-top {
@@ -43,4 +44,21 @@
 
 .border-right {
   border-right: 2px solid #fca311;
+}
+
+.selected {
+  position: relative;
+}
+
+.selected::after {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin: 0;
+  padding: 0;
+  content: '';
 }

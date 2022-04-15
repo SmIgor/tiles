@@ -5,13 +5,17 @@ const Tile = ({
   borders,
   selectedTiles,
   setSelectedTiles,
-  isLMBDown,
 }) => {
   const style = {
     backgroundColor,
   };
 
-  const classes = ['tile', ...borders].join(' ');
+  let classes = ['tile'];
+  const isSelected = selectedTiles[y][x];
+  if (isSelected) {
+    classes.push('selected');
+  }
+  classes = [...classes, ...borders].join(' ');
 
   return (
     <div
@@ -31,8 +35,8 @@ const Tile = ({
           setSelectedTiles(newSelectedTiles);
         }
       }}
-      className={classes}
       style={style}
+      className={classes}
       data-x={`${x}`}
       data-y={`${y}`}
     ></div>
