@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useReducer, useState } from 'react';
 import Tile from './Tile';
 
 const App = ({ rows, columns }) => {
@@ -10,14 +10,20 @@ const App = ({ rows, columns }) => {
     [rows, columns]
   );
 
+  const initialState = { count: 0 };
+  function reducer(state, action) {
+    switch (action.type) {
+      case 'increment':
+        return { count: state.count + 1 };
+      case 'decrement':
+        return { count: state.count - 1 };
+      default:
+        throw new Error();
+    }
+  }
+  const [state, dispatch] = useReducer(reducer, initialState);
+
   const [selectedTiles, setSelectedTiles] = useState(board);
-  const [selectedTilesCount, setSelectedTilesCount] = useState(0);
-  const updateCount = increment => {
-    let newCount = selectedTilesCount;
-    increment
-      ? setSelectedTilesCount(++newCount)
-      : setSelectedTilesCount(--newCount);
-  };
 
   const gridColumnsStyle = useMemo(
     () => ({
@@ -64,7 +70,7 @@ const App = ({ rows, columns }) => {
     <div className="content">
       <div className="board" style={gridColumnsStyle}>
         {board.map((row, indexR) =>
-          row.map((_, indexC) => {
+          row.map((currentTile, indexC) => {
             let newIndex = indexC;
             if (indexR % 2 === 1) newIndex += 1;
 
@@ -77,20 +83,16 @@ const App = ({ rows, columns }) => {
                 backgroundColor={color}
                 x={indexC}
                 y={indexR}
-                borders={
-                  selectedTiles[indexR][indexC]
-                    ? getBordersArray(indexR, indexC)
-                    : ''
-                }
+                borders={currentTile ? getBordersArray(indexR, indexC) : ''}
                 selectedTiles={selectedTiles}
                 setSelectedTiles={setSelectedTiles}
-                updateCount={updateCount}
+                dispatch={dispatch}
               />
             );
           })
         )}
       </div>
-      <div className="count">You selected {selectedTilesCount} tiles</div>
+      <div className="count">You selected {state.count} tiles</div>
     </div>
   );
 };
