@@ -1,29 +1,10 @@
-import { useMemo, useReducer, useState } from 'react';
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import Tile from './Tile';
 
 const App = ({ rows, columns }) => {
-  const board = useMemo(
-    () =>
-      Array(rows)
-        .fill(false)
-        .map(() => Array(columns).fill(false)),
-    [rows, columns]
-  );
-
-  const initialState = { count: 0 };
-  function reducer(state, action) {
-    switch (action.type) {
-      case 'increment':
-        return { count: state.count + 1 };
-      case 'decrement':
-        return { count: state.count - 1 };
-      default:
-        throw new Error();
-    }
-  }
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  const [selectedTiles, setSelectedTiles] = useState(board);
+  const count = useSelector(state => state.countReducer.count);
+  const board = useSelector(state => state.boardReducer.board);
 
   const gridColumnsStyle = useMemo(
     () => ({
@@ -37,30 +18,30 @@ const App = ({ rows, columns }) => {
     switch (indexR) {
       case 0:
         borders.push('border-top');
-        if (!selectedTiles[indexR + 1][indexC]) borders.push('border-bottom');
+        if (!board[indexR + 1][indexC]) borders.push('border-bottom');
         break;
       case rows - 1:
         borders.push('border-bottom');
-        if (!selectedTiles[indexR - 1][indexC]) borders.push('border-top');
+        if (!board[indexR - 1][indexC]) borders.push('border-top');
         break;
       default:
-        if (!selectedTiles[indexR - 1][indexC]) borders.push('border-top');
-        if (!selectedTiles[indexR + 1][indexC]) borders.push('border-bottom');
+        if (!board[indexR - 1][indexC]) borders.push('border-top');
+        if (!board[indexR + 1][indexC]) borders.push('border-bottom');
         break;
     }
 
     switch (indexC) {
       case 0:
         borders.push('border-left');
-        if (!selectedTiles[indexR][indexC + 1]) borders.push('border-right');
+        if (!board[indexR][indexC + 1]) borders.push('border-right');
         break;
       case columns - 1:
         borders.push('border-right');
-        if (!selectedTiles[indexR][indexC - 1]) borders.push('border-left');
+        if (!board[indexR][indexC - 1]) borders.push('border-left');
         break;
       default:
-        if (!selectedTiles[indexR][indexC - 1]) borders.push('border-left');
-        if (!selectedTiles[indexR][indexC + 1]) borders.push('border-right');
+        if (!board[indexR][indexC - 1]) borders.push('border-left');
+        if (!board[indexR][indexC + 1]) borders.push('border-right');
         break;
     }
     return borders;
@@ -84,15 +65,12 @@ const App = ({ rows, columns }) => {
                 x={indexC}
                 y={indexR}
                 borders={currentTile ? getBordersArray(indexR, indexC) : ''}
-                selectedTiles={selectedTiles}
-                setSelectedTiles={setSelectedTiles}
-                dispatch={dispatch}
               />
             );
           })
         )}
       </div>
-      <div className="count">You selected {state.count} tiles</div>
+      <div className="count">You selected {count} tiles</div>
     </div>
   );
 };

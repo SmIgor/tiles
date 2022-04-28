@@ -1,14 +1,12 @@
 import React, { useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleTileAction } from './store/boardReducer';
+import { decrementAction, incrementAction } from './store/countReducer';
 
-const Tile = ({
-  backgroundColor,
-  x,
-  y,
-  borders,
-  selectedTiles,
-  setSelectedTiles,
-  dispatch,
-}) => {
+const Tile = ({ backgroundColor, x, y, borders }) => {
+  const dispatch = useDispatch();
+  const board = useSelector(state => state.boardReducer.board);
+
   const style = useMemo(
     () => ({
       backgroundColor,
@@ -16,23 +14,21 @@ const Tile = ({
     [backgroundColor]
   );
 
+  const currentTile = board[y][x];
   const classes = useMemo(() => {
     let classes = ['tile'];
-    if (selectedTiles[y][x]) {
+    if (currentTile) {
       classes.push('selected');
     }
-    return (classes = [...classes, ...borders].join(' '));
-  }, [borders]);
+    return (classes = classes.concat(borders).join(' '));
+  }, [borders, currentTile]);
 
   const updateSelectedTiles = e => {
     const x = +e.target.dataset.x;
     const y = +e.target.dataset.y;
-    const newSelectedTiles = [...selectedTiles];
-    newSelectedTiles[y][x] = !newSelectedTiles[y][x];
-    setSelectedTiles(newSelectedTiles);
-    newSelectedTiles[y][x]
-      ? dispatch({ type: 'increment' })
-      : dispatch({ type: 'decrement' });
+
+    dispatch(toggleTileAction({ x, y }));
+    board[y][x] ? dispatch(decrementAction()) : dispatch(incrementAction());
   };
 
   return (
@@ -51,21 +47,4 @@ const Tile = ({
   );
 };
 
-const areEqual = (prevProps, nextProps) => {
-  const oldBorders = prevProps.borders;
-  const newBorders = nextProps.borders;
-  if (
-    oldBorders.length !== newBorders.length ||
-    typeof oldBorders !== typeof newBorders
-  )
-    return false;
-  if (typeof oldBorders === 'string' && typeof newBorders === 'string')
-    return true;
-  oldBorders.forEach((str1, index) => {
-    const str2 = newBorders[index];
-    if (str1 !== str2) return false;
-  });
-  return true;
-};
-
-export default React.memo(Tile, areEqual);
+export default React.memo(Tile);

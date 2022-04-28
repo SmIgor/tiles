@@ -2,6 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import { Provider } from 'react-redux';
+import { store } from './store/store';
+import { columns, rows } from './boardRC';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App rows={10} columns={10} />);
+root.render(
+  <Provider store={store}>
+    <App rows={rows} columns={columns} />
+  </Provider>
+);
